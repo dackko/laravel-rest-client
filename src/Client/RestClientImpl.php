@@ -5,7 +5,7 @@ namespace RestfulClient\Client;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
-use App\Modules\Client\RestClientServiceProvider as Provider;
+use RestfulClient\Providers\RestClientServiceProvider as Provider;
 
 class RestClientImpl implements RestClientInterface
 {

@@ -3,10 +3,10 @@
 namespace RestfulClient\Client;
 
 
-use App\Modules\Client\Exceptions\EmptyResponse;
-use App\Modules\Client\Exceptions\NotFoundException;
-use App\Modules\Client\Exceptions\UnauthorizedException;
-use App\Modules\Client\Exceptions\ValidationException;
+use RestfulClient\Client\Exceptions\EmptyResponse;
+use RestfulClient\Client\Exceptions\NotFoundException;
+use RestfulClient\Client\Exceptions\UnauthorizedException;
+use RestfulClient\Client\Exceptions\ValidationException;
 use Closure;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
