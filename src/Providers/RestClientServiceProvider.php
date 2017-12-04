@@ -17,7 +17,7 @@ class RestClientServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../../config/rest-client.php', config_path(self::$configFile)], 'rest-client');
+        $this->publishes([__DIR__ . '../../config/rest-client.php' => config_path(self::$configFile)], 'rest-client');
     }
 
     public function register()
