@@ -2,8 +2,8 @@
 
 return [
     'backend' => [
-        'url' => env('STUDIO_API_URL'),
-        'prefix' => env('STUDIO_API_PREFIX'),
+        'url' => env('BACKEND_API_URL'),
+        'prefix' => env('BACKEND_API_PREFIX'),
         'endpoints' => [
             'users.index' => [
                 // 'url' => 'users',
