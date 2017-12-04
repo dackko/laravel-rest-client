@@ -1,0 +1,22 @@
+{
+  "name": "kenokokoro/rest-client",
+  "description": "Laravel restful client for calling backend endpoints for given structure",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Stefan Brankovikj",
+      "email": "s.brankovikj@cosmicdevelopment.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "RestfulClient\\": "src/"
+    }
+  },
+  "require": {
+    "guzzlehttp/guzzle": "^6.3",
+    "illuminate/support": "^5.0",
+    "illuminate/http": "^5.0"
+  }
+}
