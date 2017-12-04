@@ -6,6 +6,8 @@ namespace RestfulClient\Providers;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
+use RestfulClient\Client\RestClientImpl;
+use RestfulClient\Client\RestClientInterface;
 
 class RestClientServiceProvider extends ServiceProvider
 {
