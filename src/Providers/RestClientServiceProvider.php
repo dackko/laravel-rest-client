@@ -13,11 +13,14 @@ class RestClientServiceProvider extends ServiceProvider
 {
     static $configKey = 'backend';
 
-    static $configFile = 'rest-client.php';
+    static $configFile = 'rest-client';
 
     public function boot()
     {
-        $this->publishes([__DIR__ . '/../../config/rest-client.php' => config_path(self::$configFile)], 'rest-client');
+        $this->publishes(
+            [__DIR__ . '/../../config/rest-client.php' => config_path(self::$configFile . '.php')],
+            'rest-client'
+        );
     }
 
     public function register()
