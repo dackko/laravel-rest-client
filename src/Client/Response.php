@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Client;
+namespace RestfulClient\Client;
 
 
 use App\Modules\Client\Exceptions\EmptyResponse;

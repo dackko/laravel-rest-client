@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Client\Exceptions;
+namespace RestfulClient\Client\Exceptions;
 
 
 class InternalException extends \Exception

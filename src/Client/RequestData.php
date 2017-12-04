@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Modules\Client;
+namespace RestfulClient\Client;
 
 
 class RequestData

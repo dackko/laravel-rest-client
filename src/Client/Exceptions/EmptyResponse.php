@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Modules\Client\Exceptions;
+namespace RestfulClient\Client\Exceptions;
 
 
 use Illuminate\Http\Request;

@@ -18,5 +18,12 @@
     "guzzlehttp/guzzle": "^6.3",
     "illuminate/support": "^5.0",
     "illuminate/http": "^5.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "kkkkkkkkkkk"
+      ]
+    }
   }
 }
