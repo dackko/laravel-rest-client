@@ -20,7 +20,6 @@ class RestClientImpl implements RestClientInterface
 
     public function __construct()
     {
-        Provider::$configKey = 'test';
         $this->client = app('rest.client');
         $this->config = config(Provider::$configFile . '.' . Provider::$configKey);
         $this->endpoints = $this->config['endpoints'];
