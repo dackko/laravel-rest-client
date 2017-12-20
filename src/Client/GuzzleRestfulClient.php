@@ -5,14 +5,14 @@ namespace RestfulClient\Client;
 
 
 use Exception;
-use GuzzleHttp\ClientInterface;
+use RestfulClient\Caller\Client\CallerInterface;
 
 
 /**
- * @method ClientInterface get(array $route, string $service = null, array $parameters = [])
- * @method ClientInterface post(array $routeName, string $service = null, RequestData $data = null)
- * @method ClientInterface put(array $routeName, string $service = null, RequestData $data = null)
- * @method ClientInterface delete(array $routeName, string $service = null, RequestData $data = null)
+ * @method CallerInterface get(array $route, string $service = null, array $parameters = [])
+ * @method CallerInterface post(array $routeName, string $service = null, RequestData $data = null)
+ * @method CallerInterface put(array $routeName, string $service = null, RequestData $data = null)
+ * @method CallerInterface delete(array $routeName, string $service = null, RequestData $data = null)
  */
 class GuzzleRestfulClient implements RestfulClientInterface
 {
@@ -21,11 +21,11 @@ class GuzzleRestfulClient implements RestfulClientInterface
     protected $service;
 
     /**
-     * @var ClientInterface
+     * @var CallerInterface
      */
     protected $client;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(CallerInterface $client)
     {
         $this->service = config('rest-client.default');
         $this->client = $client;
