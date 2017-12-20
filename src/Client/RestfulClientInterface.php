@@ -3,12 +3,14 @@
 
 namespace RestfulClient\Client;
 
+use GuzzleHttp\ClientInterface;
+
 
 /**
- * @method get(array $route, array $parameters = [])
- * @method post(array $routeName, RequestData $data = null)
- * @method put(array $routeName, RequestData $data = null)
- * @method delete(array $routeName, RequestData $data = null)
+ * @method ClientInterface get(array $route, string $service = null, array $parameters = [])
+ * @method ClientInterface post(array $routeName, string $service = null, RequestData $data = null)
+ * @method ClientInterface put(array $routeName, string $service = null, RequestData $data = null)
+ * @method ClientInterface delete(array $routeName, string $service = null, RequestData $data = null)
  */
 interface RestfulClientInterface
 {

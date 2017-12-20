@@ -5,12 +5,14 @@ namespace RestfulClient\Client;
 
 
 use Exception;
+use GuzzleHttp\ClientInterface;
+
 
 /**
- * @method  get(array $route, array $parameters = [])
- * @method  post(array $routeName, RequestData $data = null)
- * @method  put(array $routeName, RequestData $data = null)
- * @method  delete(array $routeName, RequestData $data = null)
+ * @method ClientInterface get(array $route, string $service = null, array $parameters = [])
+ * @method ClientInterface post(array $routeName, string $service = null, RequestData $data = null)
+ * @method ClientInterface put(array $routeName, string $service = null, RequestData $data = null)
+ * @method ClientInterface delete(array $routeName, string $service = null, RequestData $data = null)
  */
 class GuzzleRestfulClient implements RestfulClientInterface
 {
@@ -18,9 +20,15 @@ class GuzzleRestfulClient implements RestfulClientInterface
 
     protected $service;
 
-    public function __construct()
+    /**
+     * @var ClientInterface
+     */
+    protected $client;
+
+    public function __construct(ClientInterface $client)
     {
         $this->service = config('rest-client.default');
+        $this->client = $client;
     }
 
     public function service(string $service)
@@ -41,10 +49,12 @@ class GuzzleRestfulClient implements RestfulClientInterface
             $routes = [$routes];
         }
 
+        $service = is_string($arguments[1] ?? null) ? $arguments[1] : config('rest-client.default');
+
         foreach ($routes as $route) {
-            $requests[] = new Request($route, ...$arguments);
+            $requests[] = new Request($route, $service, ...$arguments);
         }
 
-        return $this->{$method}($requests);
+        return $this->client->{$method}($requests);
     }
 }

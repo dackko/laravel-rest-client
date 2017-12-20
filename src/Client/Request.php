@@ -23,9 +23,9 @@ class Request
 
     public function __construct(string $route, string $service, RequestData $data = null, array $parameters = [])
     {
-        $this->config = config('rest-client');
-        $this->route = $this->validRoute($route, $service);
-        $this->buildRequest($this->config[$service]['endpoints'][$route], $data, $parameters);
+        [$this->route, $service] = $this->validate($route, $service);
+        $this->config = config("rest-client.{$service}");
+        $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
     }
 
     public function getOptions(): array
@@ -132,16 +132,17 @@ class Request
         return $options ?? [];
     }
 
-    protected function validRoute(string $route, string $service): string
+    protected function validate(string $route, string $service): array
     {
-        if (empty($this->config[$service])) {
+        $config = config('rest-client');
+        if (empty($config[$service])) {
             throw new \Exception("Service {$service} is not found in the rest-client.php config file");
         }
 
-        if (empty($this->config[$service]['endpoints'][$route])) {
+        if (empty($config[$service]['endpoints'][$route])) {
             throw new \Exception("Route {$route} is not found under {$service} service in the rest-client.php config file");
         }
 
-        return $route;
+        return [$route, $service];
     }
 }
