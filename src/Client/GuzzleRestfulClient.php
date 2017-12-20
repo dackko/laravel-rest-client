@@ -12,9 +12,21 @@ use Exception;
  * @method  put(array $routeName, RequestData $data = null)
  * @method  delete(array $routeName, RequestData $data = null)
  */
-class GuzzleRestfulClient
+class GuzzleRestfulClient implements RestfulClientInterface
 {
     protected $methods = ['get', 'post', 'put', 'delete'];
+
+    protected $service;
+
+    public function __construct()
+    {
+        $this->service = config('rest-client.default');
+    }
+
+    public function service(string $service)
+    {
+        $this->service = $service;
+    }
 
     public function __call($method, $arguments)
     {

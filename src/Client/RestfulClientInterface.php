@@ -12,4 +12,9 @@ namespace RestfulClient\Client;
  */
 interface RestfulClientInterface
 {
+    /**
+     * @param string $service
+     * @return self
+     */
+    public function service(string $service);
 }

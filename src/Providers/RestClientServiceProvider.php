@@ -6,17 +6,11 @@ namespace RestfulClient\Providers;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
-use RestfulClient\Client\Config\ClientConfiguration;
-use RestfulClient\Client\Config\ClientConfigurationInterface;
 use RestfulClient\Client\GuzzleRestfulClient;
 use RestfulClient\Client\RestfulClientInterface;
 
 class RestClientServiceProvider extends ServiceProvider
 {
-    public static $configKey = 'backend';
-
-    public static $configFile = 'rest-client';
-
     public function boot()
     {
         $this->publishes(

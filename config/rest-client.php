@@ -1,10 +1,7 @@
 <?php
 
+# API services
 return [
-    'single-service' => true,
-    'service-name' => 'backend',
-
-    # API services
     'backend' => [
         'url' => env('BACKEND_API_URL'),
         'prefix' => env('BACKEND_API_PREFIX'),
