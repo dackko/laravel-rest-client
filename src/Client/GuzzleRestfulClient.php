@@ -50,8 +50,8 @@ class GuzzleRestfulClient implements RestfulClientInterface
         }
 
         if (is_string($arguments[1] ?? null)) {
-            unset($arguments[1]);
             $service = $arguments[1];
+            unset($arguments[1]);
         } else {
             $service = config('rest-client.default');
         }
