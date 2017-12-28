@@ -49,7 +49,12 @@ class GuzzleRestfulClient implements RestfulClientInterface
             $routes = [$routes];
         }
 
-        $service = is_string($arguments[1] ?? null) ? $arguments[1] : config('rest-client.default');
+        if (is_string($arguments[1] ?? null)) {
+            unset($arguments[1]);
+            $service = $arguments[1];
+        } else {
+            $service = config('rest-client.default');
+        }
 
         foreach ($routes as $route) {
             $requests[] = new Request($route, $service, ...$arguments);
