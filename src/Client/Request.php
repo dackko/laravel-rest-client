@@ -28,8 +28,23 @@ class Request
         $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
     }
 
-    public function getOptions(): array
+    public function getHeaders(string $key = null): array
     {
+        $headers = $this->getOptions('headers');
+
+        if ($key) {
+            return $headers[$key];
+        }
+
+        return $headers;
+    }
+
+    public function getOptions(string $key = null): array
+    {
+        if ($key) {
+            return $this->options[$key];
+        }
+
         return $this->options;
     }
 
