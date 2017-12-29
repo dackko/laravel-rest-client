@@ -28,7 +28,7 @@ class Request
         $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
     }
 
-    public function getHeaders(string $key = null): array
+    public function getHeaders(string $key = null): mixed
     {
         $headers = $this->getOptions('headers');
 
@@ -39,7 +39,7 @@ class Request
         return $headers;
     }
 
-    public function getOptions(string $key = null): array
+    public function getOptions(string $key = null): mixed
     {
         if ($key) {
             return $this->options[$key];
