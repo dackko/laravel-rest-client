@@ -9,10 +9,10 @@ use RestfulClient\Caller\Client\CallerInterface;
 
 
 /**
- * @method CallerInterface get(array $route, string $service = null, array $parameters = [])
- * @method CallerInterface post(array $routeName, string $service = null, RequestData $data = null)
- * @method CallerInterface put(array $routeName, string $service = null, RequestData $data = null)
- * @method CallerInterface delete(array $routeName, string $service = null, RequestData $data = null)
+ * @method CallerInterface get($route, string $service = null, array $parameters = [])
+ * @method CallerInterface post($route, string $service = null, RequestData $data = null)
+ * @method CallerInterface put($route, string $service = null, RequestData $data = null)
+ * @method CallerInterface delete($route, string $service = null, RequestData $data = null)
  */
 class GuzzleRestfulClient implements RestfulClientInterface
 {
@@ -61,5 +61,10 @@ class GuzzleRestfulClient implements RestfulClientInterface
         }
 
         return $this->client->{$method}($requests);
+    }
+
+    public function buildRequest($route, string $service)
+    {
+        return new Request($route, $service);
     }
 }

@@ -7,10 +7,10 @@ use RestfulClient\Caller\Client\CallerInterface;
 
 
 /**
- * @method CallerInterface get(array $route, string $service = null, array $parameters = [])
- * @method CallerInterface post(array $routeName, string $service = null, RequestData $data = null)
- * @method CallerInterface put(array $routeName, string $service = null, RequestData $data = null)
- * @method CallerInterface delete(array $routeName, string $service = null, RequestData $data = null)
+ * @method CallerInterface get($route, string $service = null, array $parameters = [])
+ * @method CallerInterface post($route, string $service = null, RequestData $data = null)
+ * @method CallerInterface put($route, string $service = null, RequestData $data = null)
+ * @method CallerInterface delete($route, string $service = null, RequestData $data = null)
  */
 interface RestfulClientInterface
 {
@@ -19,4 +19,11 @@ interface RestfulClientInterface
      * @return self
      */
     public function service(string $service);
+
+    /**
+     * @param array|string $route
+     * @param string       $service
+     * @return Request
+     */
+    public function buildRequest($route, string $service);
 }
