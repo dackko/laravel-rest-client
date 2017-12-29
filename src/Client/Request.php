@@ -28,7 +28,7 @@ class Request
         $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
     }
 
-    public function getHeaders(string $key = null): mixed
+    public function getHeaders(string $key = null)
     {
         $headers = $this->getOptions('headers');
 
@@ -39,7 +39,7 @@ class Request
         return $headers;
     }
 
-    public function getOptions(string $key = null): mixed
+    public function getOptions(string $key = null)
     {
         if ($key) {
             return $this->options[$key];
@@ -151,11 +151,15 @@ class Request
     {
         $config = config('rest-client');
         if (empty($config[$service])) {
-            throw new \Exception("Service {$service} is not found in the rest-client.php config file");
+            throw new \Exception("Service `{$service}` is not found in the `rest-client.php` config file");
         }
 
         if (empty($config[$service]['endpoints'][$route])) {
-            throw new \Exception("Route {$route} is not found under {$service} service in the rest-client.php config file");
+            throw new \Exception("Route `{$route}` is not found under `{$service}` service in the `rest-client.php` config file");
+        }
+
+        if (empty($config[$service]['endpoints'][$route]['url']) or empty($config[$service]['endpoints'][$route]['method'])) {
+            throw new \Exception("The route `{$route}` under `{$service}` service in the rest-client.php doesn't have `method` or `url` set");
         }
 
         return [$route, $service];
