@@ -49,7 +49,7 @@ class ClientCaller implements CallerInterface
                 throw new Exception('Invalid request');
             }
 
-            $promises[$request->getRoute()] = $this->client->{"{$request->getMethod()}"}($request->getUrl(),
+            $promises[$request->getRoute()] = $this->client->{"{$request->getMethod()}Async"}($request->getUrl(),
                 $request->getOptions());
         }
 
