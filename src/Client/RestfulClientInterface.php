@@ -7,7 +7,7 @@ use RestfulClient\Caller\Client\CallerInterface;
 
 
 /**
- * @method CallerInterface get($route, string $service = null, array $parameters = [])
+ * @method CallerInterface get($route, string $service = null, RequestData $data = null)
  * @method CallerInterface post($route, string $service = null, RequestData $data = null)
  * @method CallerInterface put($route, string $service = null, RequestData $data = null)
  * @method CallerInterface delete($route, string $service = null, RequestData $data = null)

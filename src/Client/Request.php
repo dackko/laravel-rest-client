@@ -52,10 +52,11 @@ class Request
         return $this->method;
     }
 
-    protected function buildRequest(array $route, RequestData $data = null, array $parameters = []): void
+    protected function buildRequest(array $route, RequestData $data = null): void
     {
         $options['headers'] = session()->has('token') ? ['authorization' => 'Bearer ' . session('token')] : [];
         $options['headers'] = array_merge($options['headers'], $data->getHeaders());
+        $parameters = $data->getParameters();
 
         $url = $this->config['url'] . $this->config['prefix'] . $route['url'];
 
