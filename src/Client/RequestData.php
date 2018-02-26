@@ -42,17 +42,6 @@ class RequestData
         return $headers[$key] ?? [];
     }
 
-    public function getParameters(string $key = null)
-    {
-        $parameters = $this->options['parameters'] ?? [];
-
-        if (empty($parameters) or is_null($key)) {
-            return $parameters;
-        }
-
-        return $parameters[$key] ?? null;
-    }
-
     public function isMultipart()
     {
         return $this->multipart;
