@@ -28,17 +28,6 @@ class Request
         $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
     }
 
-    public function getHeaders(string $key = null)
-    {
-        $headers = $this->getOptions('headers');
-
-        if ($key) {
-            return $headers[$key];
-        }
-
-        return $headers;
-    }
-
     public function getOptions(string $key = null)
     {
         if ($key) {
@@ -66,6 +55,8 @@ class Request
     protected function buildRequest(array $route, RequestData $data = null, array $parameters = []): void
     {
         $options['headers'] = session()->has('token') ? ['authorization' => 'Bearer ' . session('token')] : [];
+        $options['headers'] = array_merge($options['headers'], $data->getHeaders());
+
         $url = $this->config['url'] . $this->config['prefix'] . $route['url'];
 
         if ( ! empty($route['fields'])) {
