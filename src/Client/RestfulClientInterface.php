@@ -29,6 +29,7 @@ interface RestfulClientInterface
 
     /**
      * Get the cookies if returned from the service
+     * @param $service
      * @return array
      */
     public function cookies($service);

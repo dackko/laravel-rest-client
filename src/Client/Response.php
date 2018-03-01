@@ -69,7 +69,7 @@ class Response
     {
         if ( ! empty($cookies = $response->getHeader('Set-Cookie'))) {
             foreach ($cookies as $cookie) {
-                $this->cookies[$route] = $this->setBrowserCookie($cookie);
+                $this->cookies[$route][] = $this->setBrowserCookie($cookie);
             }
         }
 
