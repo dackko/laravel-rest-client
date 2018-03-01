@@ -42,10 +42,7 @@ class Response
                 continue;
             }
 
-            $this->response[$route] = $this->unwrapSuccess($response['value']);
-            if ($this->hasCookies()) {
-                $this->response[$route] = $this->cookies;
-            }
+            $this->response[$route] = $this->unwrapSuccess($response['value'], $route);
         }
     }
 
@@ -68,12 +65,11 @@ class Response
         return $this->cookies;
     }
 
-    private function unwrapSuccess(GuzzleResponse $response)
+    private function unwrapSuccess(GuzzleResponse $response, $route)
     {
-        $this->cookies = [];
         if ( ! empty($cookies = $response->getHeader('Set-Cookie'))) {
             foreach ($cookies as $cookie) {
-                $this->cookies[] = $this->setBrowserCookie($cookie);
+                $this->cookies[$route] = $this->setBrowserCookie($cookie);
             }
         }
 

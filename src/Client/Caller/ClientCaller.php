@@ -23,9 +23,9 @@ class ClientCaller implements CallerInterface
         $this->client = app('rest.client');
     }
 
-    public function cookies()
+    public function cookies($service)
     {
-        return $this->cookies;
+        return $this->cookies[$service] ?? [];
     }
 
     public function get(array $requests)

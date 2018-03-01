@@ -11,7 +11,7 @@ interface CallerInterface
     /**
      * @return array
      */
-    public function cookies();
+    public function cookies($service);
 
     /**
      * @param array $requests
