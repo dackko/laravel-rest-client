@@ -9,6 +9,11 @@ use RestfulClient\Client\Response;
 interface CallerInterface
 {
     /**
+     * @return array
+     */
+    public function cookies();
+
+    /**
      * @param array $requests
      * @return Response
      */

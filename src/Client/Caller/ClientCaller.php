@@ -16,9 +16,16 @@ class ClientCaller implements CallerInterface
      */
     protected $client;
 
+    protected $cookies = [];
+
     public function __construct()
     {
         $this->client = app('rest.client');
+    }
+
+    public function cookies()
+    {
+        return $this->cookies;
     }
 
     public function get(array $requests)
@@ -53,6 +60,12 @@ class ClientCaller implements CallerInterface
                 $request->getOptions());
         }
 
-        return (new Response($promises ?? []))->respond();
+        $response = (new Response($promises ?? []));
+
+        if ($response->hasCookies()) {
+            $this->cookies = $response->cookies();
+        }
+
+        return $response->respond();
     }
 }

@@ -67,4 +67,9 @@ class GuzzleRestfulClient implements RestfulClientInterface
     {
         return new Request($route, $service);
     }
+
+    public function cookies()
+    {
+        return $this->client->cookies();
+    }
 }

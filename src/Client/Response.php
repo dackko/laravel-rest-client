@@ -24,6 +24,8 @@ class Response
 
     private $response = [];
 
+    private $cookies = [];
+
     function __construct(array $promises)
     {
         $this->promises = $promises;
@@ -41,9 +43,11 @@ class Response
             }
 
             $this->response[$route] = $this->unwrapSuccess($response['value']);
+            if ($this->hasCookies()) {
+                $this->response[$route] = $this->cookies;
+            }
         }
     }
-
 
     public function respond()
     {
@@ -54,9 +58,47 @@ class Response
         return $this->response;
     }
 
+    public function hasCookies()
+    {
+        return ! empty($this->cookies);
+    }
+
+    public function cookies()
+    {
+        return $this->cookies;
+    }
+
     private function unwrapSuccess(GuzzleResponse $response)
     {
+        $this->cookies = [];
+        if ( ! empty($cookies = $response->getHeader('Set-Cookie'))) {
+            foreach ($cookies as $cookie) {
+                $this->cookies[] = $this->setBrowserCookie($cookie);
+            }
+        }
+
         return json_decode($response->getBody()->getContents(), true);
+    }
+
+    protected function setBrowserCookie(string $cookie)
+    {
+        $chunks = explode('; ', $cookie);
+        $nameValue = explode('=', $chunks[0] ?? '');
+        $expires = explode('=', $chunks[1] ?? '')[1] ?? null;
+        $age = explode('=', $chunks[2] ?? '')[1] ?? null;
+        $path = explode('=', $chunks[3] ?? '')[1] ?? '/';
+        $domain = explode('=', $chunks[4] ?? '')[1] ?? null;
+        $http = explode('=', $chunks[5] ?? '')[1] ?? false;
+
+        return [
+            'name' => $nameValue[0] ?? null,
+            'value' => $nameValue[1] ?? null,
+            'expires' => 60 * 120,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => false,
+            'httpOnly' => $http
+        ];
     }
 
     /**

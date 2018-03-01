@@ -26,4 +26,10 @@ interface RestfulClientInterface
      * @return Request
      */
     public function buildRequest($route, string $service);
+
+    /**
+     * Get the cookies if returned from the service
+     * @return array
+     */
+    public function cookies();
 }
