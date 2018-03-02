@@ -33,7 +33,7 @@ class Request
         $headers = $this->getOptions('headers');
 
         if ($key) {
-            return $headers[$key];
+            return $headers[$key] ?? null;
         }
 
         return $headers;
@@ -65,9 +65,9 @@ class Request
 
     protected function buildRequest(array $route, RequestData $data = null, array $parameters): void
     {
-        $options = [];
+        $options['headers'] = [];
         if ($this->config['has-auth']) {
-            $options['authorization'] = $this->addAuthorizationHeader();
+            $options['headers']['authorization'] = $this->addAuthorizationHeader();
         }
 
         $url = $this->config['url'] . $this->config['prefix'] . $route['url'];
@@ -172,7 +172,9 @@ class Request
 
     private function addAuthorizationHeader(): string
     {
-        if ($value = $this->config['method']($this->config['auth-key']) !== null) {
+        $method = app("\\Illuminate\\Support\\Facades\\{$this->config['method']}");
+
+        if (($value = $method->get($this->config['auth-key'])) !== null) {
             return "Bearer {$value}";
         }
 
