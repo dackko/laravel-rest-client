@@ -65,7 +65,10 @@ class Request
 
     protected function buildRequest(array $route, RequestData $data = null, array $parameters): void
     {
-        $options['headers'] = session()->has('token') ? ['authorization' => 'Bearer ' . session('token')] : [];
+        $options = [];
+        if ($this->config['has-auth']) {
+            $options['authorization'] = $this->addAuthorizationHeader();
+        }
 
         $url = $this->config['url'] . $this->config['prefix'] . $route['url'];
 
@@ -165,5 +168,14 @@ class Request
         }
 
         return [$route, $service];
+    }
+
+    private function addAuthorizationHeader(): string
+    {
+        if ($value = $this->config['method']($this->config['auth-key']) !== null) {
+            return "Bearer {$value}";
+        }
+
+        return '';
     }
 }
