@@ -4,18 +4,13 @@ namespace RestfulClient\Client\Exceptions;
 
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UnauthorizedException extends Base
 {
     public function __construct()
     {
-        parent::__construct('User not authorized.');
+        parent::__construct('User is not authorized.', JsonResponse::HTTP_UNAUTHORIZED);
     }
-
-    protected function httpResponse(Request $request)
-    {
-        return redirect()->route('home')->with(['status' => 'danger', 'message' => $this->getMessage()]);
-    }
-
 }

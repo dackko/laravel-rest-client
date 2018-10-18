@@ -1,5 +1,5 @@
 {
-  "name": "kenokokoro/rest-client",
+  "name": "dackko/laravel-rest-client",
   "description": "Laravel restful client for calling backend endpoints for given structure",
   "type": "library",
   "license": "MIT",

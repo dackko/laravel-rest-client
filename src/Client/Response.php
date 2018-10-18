@@ -3,16 +3,17 @@
 namespace RestfulClient\Client;
 
 
-use RestfulClient\Client\Exceptions\EmptyResponse;
-use RestfulClient\Client\Exceptions\NotFoundException;
-use RestfulClient\Client\Exceptions\UnauthorizedException;
-use RestfulClient\Client\Exceptions\ValidationException;
 use Closure;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Illuminate\Http\JsonResponse;
+use RestfulClient\Client\Exceptions\EmptyResponse;
+use RestfulClient\Client\Exceptions\ForbiddenAccessException;
+use RestfulClient\Client\Exceptions\NotFoundException;
+use RestfulClient\Client\Exceptions\UnauthorizedException;
+use RestfulClient\Client\Exceptions\ValidationException;
 use function GuzzleHttp\Promise\settle;
 
 class Response
@@ -34,11 +35,14 @@ class Response
 
     private function execute()
     {
-        $responses = settle($this->promises)->wait(true);
+        foreach ($this->promises as $route => $array) {
+            $promises[$route] = $array['promise'];
+        }
+        $responses = settle($promises ?? [])->wait(true);
 
         foreach ($responses as $route => $response) {
             if ($response['state'] !== PromiseInterface::FULFILLED) {
-                $this->unwrapException($response['reason']);
+                $this->unwrapException($response['reason'], $this->promises[$route]['service']);
                 continue;
             }
 
@@ -99,12 +103,14 @@ class Response
 
     /**
      * @param ServerException|ClientException $exception
+     * @param string                          $service
      * @throws EmptyResponse
+     * @throws ForbiddenAccessException
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws ValidationException
      */
-    private function unwrapException($exception)
+    private function unwrapException($exception, string $service)
     {
         $response = $exception->getResponse();
         if ( ! $response) {
@@ -114,15 +120,19 @@ class Response
 
         switch ($exception->getCode()) {
             case JsonResponse::HTTP_UNPROCESSABLE_ENTITY:
-                throw new ValidationException($content['validator']);
+                throw (new ValidationException($content['validator']))->setService($service);
                 break;
 
             case JsonResponse::HTTP_NOT_FOUND:
-                throw new NotFoundException;
+                throw (new NotFoundException)->setService($service);
                 break;
 
             case JsonResponse::HTTP_UNAUTHORIZED:
-                throw new UnauthorizedException;
+                throw (new UnauthorizedException)->setService($service);
+                break;
+
+            case JsonResponse::HTTP_FORBIDDEN:
+                throw (new ForbiddenAccessException)->setService($service);
                 break;
         }
 

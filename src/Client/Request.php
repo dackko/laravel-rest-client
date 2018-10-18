@@ -4,6 +4,7 @@
 namespace RestfulClient\Client;
 
 
+use Exception;
 use Illuminate\Http\UploadedFile;
 
 class Request
@@ -21,11 +22,19 @@ class Request
 
     protected $method = 'GET';
 
+    protected $service = null;
+
     public function __construct(string $route, string $service, RequestData $data = null, array $parameters = [])
     {
         [$this->route, $service] = $this->validate($route, $service);
+        $this->service = $service;
         $this->config = config("rest-client.{$service}");
         $this->buildRequest($this->config['endpoints'][$route], $data, $parameters);
+    }
+
+    public function getService(): string
+    {
+        return $this->service;
     }
 
     public function getHeaders(string $key = null)
@@ -70,7 +79,7 @@ class Request
             $options['headers']['authorization'] = $this->addAuthorizationHeader();
         }
 
-        $url = $this->config['url'] . $this->config['prefix'] . $route['url'];
+        $url = "{$this->config['url']}/{$this->config['prefix']}/{$route['url']}";
 
         if ( ! empty($route['fields'])) {
             $query['fields'] = $route['fields'];
@@ -97,6 +106,10 @@ class Request
         }
 
         $options['query'] = $query ?? [];
+        if (strtolower($route['method']) === 'get') {
+            $options['query'] = array_merge($options['query'],$options['json'] ?? []);
+            $options['json'] = [];
+        }
 
         $this->options = $options;
         $this->url = $url;
@@ -111,11 +124,11 @@ class Request
                 $options = array_merge($options, $this->buildMultipartDataFromArray($value, $key));
             } else {
                 $option = ['name' => $key, 'contents' => $value];
+
                 if ($value instanceof UploadedFile) {
-                    $option['filename'] = $value->getClientOriginalName();
-                    $option['contents'] = fopen($value->getPathname(), 'r');
-                    $option['Mime-Type'] = $value->getClientMimeType();
+                    $option = array_merge($option, $this->multipartContentFromFile($value));
                 }
+
                 $options[] = $option;
             }
         }
@@ -139,32 +152,56 @@ class Request
 
     protected function buildMultipartDataFromArray(array $data, $name): array
     {
+        $options = [];
+
         foreach ($data as $key => $value) {
-            $option = ["name" => "{$name}[{$key}]", 'contents' => $value];
-            if ($value instanceof UploadedFile) {
-                $option['filename'] = $value->getClientOriginalName();
-                $option['contents'] = fopen($value->getPathname(), 'r');
-                $option['Mime-Type'] = $value->getClientMimeType();
+            $optionName = "{$name}[{$key}]";
+            if (is_array($value)) {
+                $options = array_merge($options, $this->buildMultipartDataFromArray($value, $optionName));
+                continue;
             }
-            $options[] = $option;
+
+            $option['name'] = $optionName;
+            $option['contents'] = $value;
+
+            if ($value instanceof UploadedFile) {
+                $option = array_merge($option, $this->multipartContentFromFile($value));
+            }
+
+            array_push($options, $option);
         }
 
         return $options ?? [];
     }
 
+    protected function multipartContentFromFile(UploadedFile $file)
+    {
+        $option['filename'] = $file->getClientOriginalName();
+        $option['contents'] = fopen($file->getPathname(), 'r');
+        $option['Mime-Type'] = $file->getClientMimeType();
+
+        return $option;
+    }
+
+    /**
+     * @param string $route
+     * @param string $service
+     * @return array
+     * @throws Exception
+     */
     protected function validate(string $route, string $service): array
     {
         $config = config('rest-client');
         if (empty($config[$service])) {
-            throw new \Exception("Service `{$service}` is not found in the `rest-client.php` config file");
+            throw new Exception("Service `{$service}` is not found in the `rest-client.php` config file");
         }
 
         if (empty($config[$service]['endpoints'][$route])) {
-            throw new \Exception("Route `{$route}` is not found under `{$service}` service in the `rest-client.php` config file");
+            throw new Exception("Route `{$route}` is not found under `{$service}` service in the `rest-client.php` config file");
         }
 
         if (empty($config[$service]['endpoints'][$route]['url']) or empty($config[$service]['endpoints'][$route]['method'])) {
-            throw new \Exception("The route `{$route}` under `{$service}` service in the rest-client.php doesn't have `method` or `url` set");
+            throw new Exception("The route `{$route}` under `{$service}` service in the rest-client.php doesn't have `method` or `url` set");
         }
 
         return [$route, $service];
@@ -172,9 +209,18 @@ class Request
 
     private function addAuthorizationHeader(): string
     {
-        $method = app("\\Illuminate\\Support\\Facades\\{$this->config['method']}");
+        $value = request()->header('authorization', '');
+        if ( ! empty($value)) {
+            return $value;
+        }
 
-        if (($value = $method->get($this->config['auth-key'])) !== null) {
+        return $this->addAuthorizationHeaderFromLocal();
+    }
+
+    private function addAuthorizationHeaderFromLocal(): string
+    {
+        $method = $this->config['method'];
+        if (($value = $method($this->config['auth-key'])) !== null) {
             return "Bearer {$value}";
         }
 

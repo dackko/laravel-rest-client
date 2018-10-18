@@ -3,7 +3,7 @@
 namespace RestfulClient\Client\Exceptions;
 
 
-class InternalException extends \Exception
+class InternalException extends Base
 {
 
 }

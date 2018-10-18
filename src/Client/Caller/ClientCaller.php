@@ -23,7 +23,7 @@ class ClientCaller implements CallerInterface
         $this->client = app('rest.client');
     }
 
-    public function cookies($service)
+    public function cookies(string $service)
     {
         return $this->cookies[$service] ?? [];
     }
@@ -48,6 +48,11 @@ class ClientCaller implements CallerInterface
         return $this->call($requests);
     }
 
+    /**
+     * @param array $requests
+     * @return array|mixed
+     * @throws Exception
+     */
     public function call(array $requests)
     {
         /** @var Request $request */
@@ -56,11 +61,13 @@ class ClientCaller implements CallerInterface
                 throw new Exception('Invalid request');
             }
 
-            $promises[$request->getRoute()] = $this->client->{"{$request->getMethod()}Async"}($request->getUrl(),
-                $request->getOptions());
+            $promises[$request->getRoute()] = [
+                'promise' => $this->client->{"{$request->getMethod()}Async"}($request->getUrl(), $request->getOptions()),
+                'service' => $request->getService()
+            ];
         }
 
-        $response = (new Response($promises ?? []));
+        $response = new Response($promises ?? []);
 
         if ($response->hasCookies()) {
             $this->cookies = $response->cookies();

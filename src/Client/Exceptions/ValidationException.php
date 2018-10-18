@@ -3,7 +3,7 @@
 namespace RestfulClient\Client\Exceptions;
 
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ValidationException extends Base
 {
@@ -11,12 +11,7 @@ class ValidationException extends Base
 
     public function __construct(array $messages)
     {
-        parent::__construct('The given data failed to pass validation.');
+        parent::__construct('The given data failed to pass validation.', JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
         $this->messages = $messages;
-    }
-
-    protected function httpResponse(Request $request)
-    {
-        return redirect()->back()->withInput($request->input())->withErrors($this->messages);
     }
 }
